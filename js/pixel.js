@@ -1,5 +1,6 @@
 ;(function (exports) {
   var DIRECTIONS = ["n", "e", "s", "w", "ne", "nw", "se", "sw"];
+  var VALS = ["r", "g", "b", "a"];
 
   // Pixel is a dumb object that does not know about image data
   // It is only meant to be used by Canvas directly for:
@@ -9,13 +10,13 @@
     var self = this;
     this.x = x;
     this.y = y;
-    this.r = vals.shift();
-    this.g = vals.shift();
-    this.b = vals.shift();
-    this.a = vals.shift();
     this.neighbors = {};
 
-    DIRECTIONS.forEach(function(d,idx){
+    VALS.forEach(function(d) {
+      self[d] = vals.shift();
+    });
+
+    DIRECTIONS.forEach(function(d){
       self.neighbors[d] = (self[d]());
     });
   }
