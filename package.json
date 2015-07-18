@@ -4,5 +4,9 @@
   "description": "A lightweight lib for manipulating HTML5 canvas",
   "author": "Jade Misenas <cjmisenas@gmail.com>",
   "license": "MIT"
+  "devDependencies": {
+    "mocha": "2.2.5",
+    "sinon": "1.15.4",
+  }
 }
 
