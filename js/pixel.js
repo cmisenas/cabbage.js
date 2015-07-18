@@ -1,44 +1,26 @@
 ;(function (exports) {
   var DIRECTIONS = ["n", "e", "s", "w", "ne", "nw", "se", "sw"];
-  // Revisit: do you really need to pass index to pixel?
-  // Proposal: Pixel should only deal with coords
-  // Leave all coords <-> index calculation to canvas
-  // Revisit: do you really need to pass imgData?
-  // Currently needed to be able to calculate neighbors (img data width)
-  function Pixel(sIndex, x, y, imgData) {
+
+  // Pixel is a dumb object that does not know about image data
+  // It is only meant to be used by Canvas directly for:
+  // manipulating canvas values, storing and easy retrieval of rgba
+
+  function Pixel(x, y, vals) {
     var self = this;
     this.x = x;
     this.y = y;
-    this.sIndex = sIndex;
-    this.imgData = imgData.data;
-    this.width = imgData.width;
-    this.neighbors = [];
+    this.r = vals.shift();
+    this.g = vals.shift();
+    this.b = vals.shift();
+    this.a = vals.shift();
+    this.neighbors = {};
 
-    DIRECTIONS.map(function(d,idx){
-      self.neighbors.push(that[d]());
+    DIRECTIONS.forEach(function(d,idx){
+      self.neighbors[d] = (self[d]());
     });
   }
 
-  Pixel.prototype.r = function() {
-    return this.imgData[this.sIndex];
-  };
-
-  Pixel.prototype.g = function() {
-    return this.imgData[this.sIndex + 1];
-  };
-
-  Pixel.prototype.b = function() {
-    return this.imgData[this.sIndex + 2];
-  };
-
-  Pixel.prototype.a = function() {
-    return this.imgData[this.sIndex + 3];
-  };
-
   Pixel.prototype.n = function(){
-    // pixels are simply arrays in canvas image data
-    // where 1 pixel occupies 4 consecutive elements
-    // equal to r-g-b-a
     return {x: this.x, y: this.y - 1};
   };
 
@@ -70,4 +52,5 @@
     return {x: this.x + 1, y: this.y - 1};
   };
 
+  exports.Pixel = Pixel;
 }(this));
