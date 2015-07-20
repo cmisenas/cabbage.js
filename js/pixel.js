@@ -3,7 +3,7 @@
   var VALS = ["r", "g", "b", "a"];
 
   // Pixel is a dumb object that does not know about image data
-  // It is only meant to be used by Canvas directly for:
+  // It is only meant to be used by Cabbage directly for:
   // manipulating canvas values, storing and easy retrieval of rgba
 
   function Pixel(x, y, vals) {

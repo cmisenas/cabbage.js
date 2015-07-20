@@ -1,36 +1,13 @@
-/*
-  Canvas
-    index is based on actual place of the pixel (not by 4s)
-
-  List of Functions:
-
-  loadImg = function(img, sx, sy)
-  setImg = function(imgData)
-  deleteImg = function()
-  resetImg = function()
-  getCurrentImg = function()
-  originalImg = function()
-  map = function()
-  convolve = function()
-  getPixel = function(loc, defVal)
-  setPixel = function(pixel, val)
-  isBorder = function(coords)
-  _convertToIndex = function(coords)
-  _convertToCoords = function(index)
-  putImageData = function(imgData, x, y)
-  _getMatrix = function(cx, cy, size)
-
- */
 var assert = require('assert'),
     sinon = require('sinon'),
     jsdom = require('jsdom').jsdom,
     document = jsdom('<html></html>', {}),
     window = document.defaultView;
 
-var Canvas = require('../js/cabbage').Canvas,
+var Cabbage = require('../js/cabbage').Cabbage,
     canvas;
 
-describe('Canvas', function(){
+describe('Cabbage', function(){
   setup(function(){
     document.getElementById = sinon.stub().returns({
       getContext: function(){
@@ -42,7 +19,7 @@ describe('Canvas', function(){
         };
       }
     });
-    canvas = new Canvas('foo', 10, 10, document);
+    canvas = new Cabbage('foo', 10, 10, document);
   });
 
   describe('loadImg', function() {
