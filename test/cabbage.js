@@ -52,6 +52,8 @@ describe('Cabbage', function(){
     });
   });
 
+  /*
+  think of meaningful test
   describe('setImg', function() {
   });
 
@@ -67,8 +69,9 @@ describe('Cabbage', function(){
   describe('getOriginalImg', function() {
   });
 
-  describe('map', function() {
+  describe('putImageData', function() {
   });
+  */
 
   describe('convolve', function() {
   });
@@ -94,4 +97,3 @@ describe('Cabbage', function(){
   describe('_buildMatrix', function() {
   });
 });
-
