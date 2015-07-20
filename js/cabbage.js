@@ -1,19 +1,21 @@
 ;(function (exports) {
+  var d = exports.document;
   var createCanvas = function(id, w, h) {
     // if the element was not found
     // the default behavior is to create a canvas
     // and make it the html body's first child
     var elem;
-    elem = document.createElement('canvas');
+    elem = d.createElement('canvas');
     elem.id = id;
     elem.width = w;
     elem.height = h;
-    document.body.insertBefore(elem, document.body.firstChild);
+    d.body.insertBefore(elem, d.body.firstChild);
     return elem;
   }
 
-  function Canvas(id, w, h) {
-    this.elem = document.getElementById(id) || createCanvas(id, w, h);
+  function Canvas(id, w, h, document) {
+    d = d || document;
+    this.elem = d.getElementById(id) || createCanvas(id, w, h);
     this.width = w || 600;
     this.height = h || 400;
     this.ctx = this.elem.getContext('2d');
@@ -154,5 +156,5 @@
     return matrix;
   };
 
+  exports.Canvas = Canvas;
 }(this));
-
