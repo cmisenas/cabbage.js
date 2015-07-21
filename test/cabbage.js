@@ -83,19 +83,8 @@ describe('Cabbage', function(){
 
     setup(function(){
       var mockIDArr = [],
-          size = coords.length * 4;
+          size = w * h * 4;
       while (--size) mockIDArr[size] = defVal;
-      document.getElementById = sinon.stub().returns({
-        getContext: function(arg){
-          return {
-            drawImage: sinon.spy(),
-            putImageData: sinon.spy(),
-            getImageData: sinon.spy(),
-            createImageData: sinon.spy(),
-            fillRect: sinon.spy()
-          };
-        }
-      });
       cabbage = new Cabbage('foo', w, h, document);
       cabbage.currImg = {};
       cabbage.currImg.data = mockIDArr;
@@ -208,8 +197,7 @@ describe('Cabbage', function(){
       describe('given an associative array', function() {
         it('sets rgba value of appropriate image data array elements', function() {
           var pixel = new Pixel(0, 0, [0, 0, 0, 0]);
-          var rgba = {r: 123, g: 45, b: 100, a: 255};
-          cabbage.setPixel(pixel, rgba);
+          cabbage.setPixel(pixel, {r: 123, g: 45, b: 100, a: 255});
           expect(cabbage.ctx.fillStyle).to.equal('rgba(123, 45, 100, 255)');
           expect(cabbage.ctx.fillRect).to.have.been.calledWith(0, 0, 1, 1);
         });
