@@ -129,7 +129,7 @@ describe('Cabbage', function(){
         var mockMatrix = [[5, 5, 5],
                           [5, 0, 5],
                           [5, 5, 5]];
-        sinon.stub(cabbage, '_getMatrix', function(x, y, size) {
+        sinon.stub(cabbage, '_buildMatrix', function(x, y, size) {
           return mockMatrix;
         });
         cabbage.convolve(function(matrix) {
@@ -381,8 +381,9 @@ describe('Cabbage', function(){
 
       describe('given an i % 4 > 0 and 0 < i < image data length (i.e. not an r but a g, b, or a value)', function() {
         it('converts image data index to pixel index', function() {
-          expect(cabbage._convertIDIndexToPixIndex(29)).to.deep.equal(7);
+          expect(cabbage._convertIDIndexToPixIndex(2)).to.deep.equal(0);
           expect(cabbage._convertIDIndexToPixIndex(17)).to.deep.equal(4);
+          expect(cabbage._convertIDIndexToPixIndex(27)).to.deep.equal(6);
         });
       });
 
@@ -411,26 +412,35 @@ describe('Cabbage', function(){
         it('returns a complete matrix of default 3x3 array', function() {
           var matrix = cabbage._buildMatrix(1, 1);
           expect(matrix).to.deep.equal([[0, 4, 8],
-                                   [12, 16, 20],
-                                   [24, 28, 32]]);
+                                        [12, 16, 20],
+                                        [24, 28, 32]]);
         });
 
         it('returns a complete matrix of size 3 if given is too small or too big (max is 9)', function() {
           expect(cabbage._buildMatrix(1, 1, 13)).to.deep.equal([[0, 4, 8],
-                                                           [12, 16, 20],
-                                                           [24, 28, 32]]);
+                                                                [12, 16, 20],
+                                                                [24, 28, 32]]);
           expect(cabbage._buildMatrix(1, 1, 1)).to.deep.equal([[0, 4, 8],
-                                                           [12, 16, 20],
-                                                           [24, 28, 32]]);
+                                                               [12, 16, 20],
+                                                               [24, 28, 32]]);
         });
 
-        it('returns a complete matrix of size n+1 if n%2 > 0', function() {
-          var matrix1 = cabbage._buildMatrix(1, 1, 2);
-          expect(matrix1).to.deep.equal([[0, 4, 8],
-                                    [12, 16, 20],
-                                    [24, 28, 32]]);
-          var matrix2 = cabbage._buildMatrix(2, 2, 4);
-          expect(matrix2).to.deep.equal(expected);
+        it('returns a complete matrix of size n+1 if n%2 > 0 or max if n+1 > max or min if n+1 < min', function() {
+          expect(cabbage._buildMatrix(1, 1, 2)).to.deep.equal([[0, 4, 8],
+                                         [12, 16, 20],
+                                         [24, 28, 32]]);
+          /*
+           _____________
+           |   |   |   |
+           |___|___|___|
+           |   | n | n |
+           |___|___|___|
+           |   | n | * |
+           |___|___|___|
+           */
+          expect(cabbage._buildMatrix(2, 2, 4)).to.deep.equal([[16, 20, undefined],
+                                         [28, 32, undefined],
+                                         [undefined, undefined, undefined]]);
         });
 
         it('returns a matrix of size n given 3 <= n <= 9 and n % 2 == 1', function() {
@@ -439,10 +449,19 @@ describe('Cabbage', function(){
       });
 
       it('ignores parts that are out of bounds', function() {
+      /*
+       _____________
+       | n | n |   |
+       |___|___|___|
+       | * | n |   |
+       |___|___|___|
+       | n | n |   |
+       |___|___|___|
+       */
         var matrix = cabbage._buildMatrix(0, 1);
-        expect(matrix).to.equal([[undefined, undefined, undefined],
-                                 [0, 4, 8],
-                                 [12, 16, 20]]);
+        expect(matrix).to.deep.equal([[undefined, 0, 4],
+                                      [undefined, 12, 16],
+                                      [undefined, 24, 28]]);
       });
     });
   });
