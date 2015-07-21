@@ -1,9 +1,46 @@
 ;(function (exports) {
   var d = exports.document;
-  var createCanvas = function(id, w, h) {
-    // if the element was not found
-    // the default behavior is to create a canvas
-    // and make it the html body's first child
+
+  function Cabbage(id, w, h, document) {
+    d = d || document;
+    this.elem = d.getElementById(id) || this._createCanvas(id, w, h);
+    this.width = w || 600;
+    this.height = h || 400;
+    this.ctx = this.elem.getContext('2d');
+    this.origImg = {};
+    this.currImg = {};
+  }
+
+  Cabbage.prototype.loadImg = function(img, sx, sy) {
+    var self = this;
+    if (typeof img === 'string') {
+      this._createImage(img, function(usrImg) {
+        self._img = usrImg;
+        if (usrImg.width !== self.width || usrImg.height !== self.height) {
+          self.width = usrImg.width;
+          self.height = usrImg.height;
+          self.elem.width = self.width;
+          self.elem.height = self.height;
+        }
+        self.drawImage(img, sx, sy);
+      });
+    } else if (/HTMLImageElement/.test(img.constructor)){
+      this._img = img;
+      this.drawImage(img, sx, sy);
+    }
+    return this;
+  };
+
+  Cabbage.prototype._createImage = function(imgSrc, fn) {
+    var self = this;
+    usrImg = new Image();
+    usrImg.onload = function() {
+      fn(usrImg);
+    };
+    usrImg.src = imgSrc;
+  };
+
+  Cabbage.prototype._createCanvas = function(id, w, h) {
     var elem;
     elem = d.createElement('canvas');
     elem.id = id;
@@ -11,32 +48,11 @@
     elem.height = h;
     d.body.insertBefore(elem, d.body.firstChild);
     return elem;
-  }
+  };
 
-  function Cabbage(id, w, h, document) {
-    d = d || document;
-    this.elem = d.getElementById(id) || createCanvas(id, w, h);
-    this.width = w || 600;
-    this.height = h || 400;
-    this.ctx = this.elem.getContext('2d');
-    this.origImg = {};
-  }
-
-  Cabbage.prototype.loadImg = function(img, sx, sy) {
-    var that = this;
-    var usrImg = new Image();
-
-    usrImg.onload = function() {
-      if (usrImg.width !== that.width || usrImg.height !== that.height) {
-        that.width = usrImg.width;
-        that.height = usrImg.height;
-        that.elem.width = that.width;
-        that.elem.height = that.height;
-      }
-      that.ctx.drawImage(usrImg, sx || 0, sy || 0);
-      that.origImg.imgData = that.ctx.getImageData(0, 0, that.width, that.height);
-    };
-    usrImg.src = img;
+  Cabbage.prototype.drawImage = function(img, sx, sy) {
+    this.ctx.drawImage(img, sx || 0, sy || 0);
+    this.origImg.imgData = this.ctx.getImageData(0, 0, this.width, this.height);
   };
 
   Cabbage.prototype.setImg = function(imgData) {
@@ -136,6 +152,17 @@
             x : (index % (this.width * m)) / m,
             y : Math.floor(index / (this.width * m))
            };
+  };
+
+  // Every putImageData done via object
+  // stores current image for faster access later
+  Cabbage.prototype.putImageData = function(imgData, x, y) {
+    this.ctx.putImageData(id, pixel.x, pixel.y);
+    this.refreshCurrImageData();
+  };
+
+  Cabbage.prototype.refreshCurrImageData = function() {
+    this.currImg = this.getCurrentImg();
   };
 
   Cabbage.prototype._getMatrix = function(cx, cy, size) {
