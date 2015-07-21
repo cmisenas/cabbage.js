@@ -160,35 +160,28 @@ describe('Cabbage', function(){
     });
 
     describe('getPixel', function() {
-      describe('give no default value', function() {
-        describe('given a coordinate', function() {
-          it('returns a pixel object', function() {
-            var pixel = cabbage.getPixel({x: 0, y: 2});
-            expect(pixel).to.be.an.instanceOf(Pixel);
-          });
-
-          it('returns undefined if no pixel is found with that coordinate', function() {
-            var pixel = cabbage.getPixel({x: -123, y: 2});
-            expect(pixel).to.be.an('undefined');
-          });
+      describe('given a coordinate', function() {
+        it('returns a pixel object', function() {
+          var pixel = cabbage.getPixel({x: 0, y: 2});
+          expect(pixel).to.be.an.instanceOf(Pixel);
         });
 
-        describe('given a number assumed to represent image data array index', function() {
-          it('returns a pixel object', function() {
-            var pixel = cabbage.getPixel(32);
-            expect(pixel).to.be.an.instanceOf(Pixel);
-          });
-
-          it('returns undefined if no pixel is found with that index', function() {
-            var pixel = cabbage.getPixel(-512);
-            expect(pixel).to.be.an('undefined');
-          });
+        it('throws an error for invalid coordinate values', function() {
+          var message = 'Invalid coordinate. Unable to convert to image data index';
+          expect(function() { cabbage.getPixel({x: -123, y: 2}); }).to.throw(message);
         });
       });
 
-      it('returns the default value if given', function() {
-        var pixel = cabbage.getPixel(36, 255);
-        expect(pixel).to.equal(255);
+      describe('given a number assumed to represent image data array index', function() {
+        it('returns a pixel object', function() {
+          var pixel = cabbage.getPixel(32);
+          expect(pixel).to.be.an.instanceOf(Pixel);
+        });
+
+        it('throws an error if an invalid image data index is given', function() {
+          var message = 'Invalid image data index. Unable to convert to coordinate';
+          expect(function() { cabbage.getPixel(-512); }).to.throw(message);
+        });
       });
     });
 

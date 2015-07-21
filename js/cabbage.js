@@ -79,23 +79,25 @@
     return this.ctx.createImageData(this.origImg.imgData)
   };
 
-  Cabbage.prototype.map = function() {
-    var i;
+  Cabbage.prototype.map = function(fn) {
+    var x, y, cvsIndex, pixelIndex;
     for (var y = 0; y < this.height; y++) {
       for (var x = 0; x < this.width; x++) {
-        i = x * 4 + y * this.width * 4;
-        fn(i);
+        pixelIndex = (y * this.width) + x;
+        cvsIndex = x * 4 + y * this.width * 4;
+        fn(x, y, pixelIndex, cvsIndex);
       }
     }
   };
 
-  Cabbage.prototype.convolve = function() {
-    var i, matrix;
+  Cabbage.prototype.convolve = function(fn, size) {
+    var cvsIndex, pixelIndex, matrix, size = size || 3;
     for (var y = 0; y < this.height; y++) {
       for (var x = 0; x < this.width; x++) {
-        i = x * 4 + y * this.width * 4;
-        matrix = getMatrix(x, y, size);
-        fn(i, matrix);
+        pixelIndex = (y * this.width) + x;
+        cvsIndex = x * 4 + y * this.width * 4;
+        matrix = this._getMatrix(x, y, size);
+        fn(matrix, x, y, pixelIndex, cvsIndex);
       }
     }
   };
@@ -113,32 +115,46 @@
       coords = loc;
     }
 
-    if (index < 0 || index (this.imgData.data.length/4 - 1)) {
+    if (index < 0 || index > (this.currImg.data.length - 1)) {
       return defVal;
     } else {
-      return new Pixel(index, coords.x, coords.y, this.imgData);
+      return new Pixel(coords.x, coords.y, this.currImg.data.slice(index, index + 4));
     }
   };
 
   Cabbage.prototype.setPixel = function(pixel, val) {
-    var id = this.ctx.createImageData(1, 1),
-        i = this._convertToIndex(pixel.x, pixel.y);
-    id.data[i] = typeof val == 'number'? val: val.r;
-    id.data[i+1] = typeof val == 'number'? val: val.g;
-    id.data[i+2] = typeof val == 'number'? val: val.b;
-    // not sure of an effective way to set the A-value yet
-    // but expected behavior when setting a pixel to a single value
-    // is to simply set RGB (i.e. a gray value)
-    id.data[i+3] = typeof val == 'number'? imgData.data[i+3]: val.a;
-    this.ctx.putImageData(id, pixel.x, pixel.y);
+    var i = this._convertToIndex(pixel),
+        r, g, b, a;
+
+    if (typeof val === 'number') {
+      r = g = b = val;
+      a = this.getCurrentImg().data[i + 3];
+    } else {
+      r = val.r;
+      g = val.g;
+      b = val.b;
+      a = val.a;
+    }
+    this._drawPixel(pixel, r, g, b, a);
+  };
+
+  Cabbage.prototype._drawPixel = function(pixel, r, g, b, a){
+    this.ctx.fillStyle = 'rgba(' + [r, g, b, a].join(', ') + ')';
+    this.ctx.fillRect(pixel.x, pixel.y, 1, 1);
   };
 
   Cabbage.prototype.isBorder = function(coords) {
-    var index = this._convertToIndex(coords);
-    return (index - (this.width * 4)) <   0 ||
-           (index % (this.width * 4)) === 0 ||
-           (index % (this.width * 4)) === ((this.width * 4) - 4) ||
-           (index + (this.width * 4)) >   (this.width * this.height * 4);
+    return ((coords.x === 0 && coords.y < this.height && coords.y >= 0) ||
+            (coords.y === 0 && coords.x < this.width && coords.x >= 0) ||
+            (coords.x === this.width - 1 && coords.y < this.height && coords.y >= 0) ||
+            (coords.y === this.height - 1 && coords.x < this.width && coords.x >= 0));
+  }
+
+  Cabbage.prototype.isOutOfBounds = function(coords) {
+    return coords.x < 0 ||
+           coords.x > this.width - 1 ||
+           coords.y < 0 ||
+           coords.y > this.height - 1;
   }
 
   Cabbage.prototype._convertToIndex = function(coords) {
