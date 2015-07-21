@@ -7,8 +7,7 @@ var chai = require('chai'),
     window = document.defaultView;
 
 var Cabbage = require('../js/cabbage').Cabbage,
-    Pixel = require('../js/pixel').Pixel,
-    cabbage;
+    Pixel = require('../js/pixel').Pixel;
 
 global.Cabbage = Cabbage;
 global.Pixel = Pixel;
@@ -16,19 +15,24 @@ global.Pixel = Pixel;
 chai.use(sinonChai);
 
 describe('Cabbage', function(){
+  setup(function() {
+    document.getElementById = sinon.stub().returns({
+      getContext: function(arg){
+        return {
+          drawImage: sinon.spy(),
+          putImageData: sinon.spy(),
+          getImageData: sinon.spy(),
+          createImageData: sinon.spy(),
+          fillRect: sinon.spy()
+        };
+      }
+    });
+  });
+
   describe('initialization', function() {
+    var cabbage;
+
     setup(function(){
-      document.getElementById = sinon.stub().returns({
-        getContext: function(arg){
-          return {
-            drawImage: sinon.spy(),
-            putImageData: sinon.spy(),
-            getImageData: sinon.spy(),
-            createImageData: sinon.spy(),
-            fillRect: sinon.spy()
-          };
-        }
-      });
       cabbage = new Cabbage('foo', 10, 10, document);
       // bypass _creatImage functionality which simply loads image via HTMLImageElement
       sinon.stub(cabbage, '_createImage', function(src, fn) {
@@ -74,7 +78,9 @@ describe('Cabbage', function(){
   */
 
   describe('manipulation', function() {
-    var w = h = 3;
+    var w, h;
+    w = h = 3;
+    var cabbage;
     var rgba = [0, 0, 0, 255];
     var defVal = 42;
     var coords = [{x: 0, y: 0}, {x: 1, y: 0}, {x: 2, y: 0},
@@ -84,13 +90,10 @@ describe('Cabbage', function(){
     setup(function(){
       var mockIDArr = [],
           size = w * h * 4;
-      while (--size) mockIDArr[size] = defVal;
+      while (size--) mockIDArr.push(defVal);
       cabbage = new Cabbage('foo', w, h, document);
       cabbage.currImg = {};
       cabbage.currImg.data = mockIDArr;
-      sinon.stub(cabbage, '_createImage', function(src, fn) {
-        fn({ width: w, height: h });
-      });
       sinon.stub(cabbage, 'getCurrentImg', function() {
         return cabbage.currImg;
       });
@@ -282,10 +285,11 @@ describe('Cabbage', function(){
 
   // methods not meant to be called directly
   describe('private helpers', function() {
-    var w = h = 5;
+    var w, h;
+    w = h = 5;
     var rgba = [0, 0, 0, 255];
     var defVal = 42;
-    var bigImg;
+    var bigImg, cabbage;
     var expected = [[0, 4, 8, 12, 16],
                     [20, 24, 28, 32, 36],
                     [40, 44, 48, 52, 56],
@@ -295,10 +299,11 @@ describe('Cabbage', function(){
     setup(function(){
       var mockIDArr = [],
           size = w * h * 4;
-      while (--size) mockIDArr[size] = defVal;
+      while (size--) mockIDArr.push(defVal);
       bigImg = new Cabbage('foo', w, h, document);
-      cabbage.currImg = {};
-      cabbage.currImg.data = mockIDArr;
+      bigImg.currImg = {};
+      bigImg.currImg.data = mockIDArr;
+      cabbage = new Cabbage('foo', 10, 10, document);
     });
 
     describe('_convertCoordsToIDIndex', function() {
