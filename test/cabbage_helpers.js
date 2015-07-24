@@ -100,7 +100,7 @@ describe('Cabbage', function(){
       });
 
       it('throws an error when an invalid image data index is given', function() {
-        var message = 'Invalid image data index. Unable to convert to coordinates';
+        var message = 'Invalid image data index. Unable to convert to coordinate';
         expect(function() { cabbage._convertIDIndexToCoords({}); }).to.throw(message);
         expect(function() { cabbage._convertIDIndexToCoords(4.6); }).to.throw(message);
       });
@@ -113,7 +113,7 @@ describe('Cabbage', function(){
       });
 
       it('throws an error when an invalid pixel index is given', function() {
-        var message = 'Invalid pixel index. Unable to convert to coordinates';
+        var message = 'Invalid pixel index. Unable to convert to coordinate';
         expect(function() { cabbage._convertPixIndexToCoords(9); }).to.throw(message);
         expect(function() { cabbage._convertPixIndexToCoords(-42); }).to.throw(message);
       });

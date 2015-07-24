@@ -1,5 +1,8 @@
 ;(function (exports) {
   var d = exports.document;
+  var COORDS = 'coordinate';
+  var PIXIDX = 'pixel index';
+  var IDIDX = 'image data index';
 
   function Cabbage(id, w, h, document) {
     d = d || document;
@@ -188,48 +191,45 @@
   };
 
   Cabbage.prototype._convertCoordsToIDIndex = function(coords) {
-    var msg = 'Invalid coordinate. Unable to convert to image data index';
-    this._checkValidCoords(coords, msg);
+    if (!this._checkValidCoords(coords)) {
+      this._throwValidationError(COORDS, IDIDX);
+    }
     var m = 4;
     return (coords.y * this.width + coords.x) * m;
   };
 
   Cabbage.prototype._convertCoordsToPixIndex = function(coords) {
-    var msg = 'Invalid coordinate. Unable to convert to pixel index';
-    this._checkValidCoords(coords, msg);
+    if (!this._checkValidCoords(coords)) {
+      this._throwValidationError(COORDS, PIXIDX);
+    }
     return (coords.y * this.width) + coords.x;
   };
 
   Cabbage.prototype._checkValidCoords = function(coords, msg) {
-    if (!coords ||
-        !(coords.x === parseInt(coords.x, 10)) ||
-        !(coords.y === parseInt(coords.y, 10)) ||
-        coords.x < 0 || coords.x >= this.width ||
-        coords.y < 0 || coords.y >= this.height) {
-      throw new Error(msg);
-    }
+    return (!!coords &&
+            (coords.x === parseInt(coords.x, 10)) &&
+            (coords.y === parseInt(coords.y, 10)) &&
+            coords.x >= 0 && coords.x < this.width &&
+            coords.y >= 0 && coords.y < this.height);
   };
 
   Cabbage.prototype._checkValidPIndex = function(pIdx, msg) {
-    if (!(pIdx === parseInt(pIdx, 10)) ||
-        pIdx < 0 ||
-        pIdx >= (this.width * this.height)) {
-      throw new Error(msg);
-    }
+    return ((pIdx === parseInt(pIdx, 10)) &&
+            pIdx >= 0 &&
+            pIdx < (this.width * this.height));
   };
 
   Cabbage.prototype._checkValidIDIndex = function(pIdx, msg) {
-    if (!(pIdx === parseInt(pIdx, 10)) ||
-        pIdx < 0 ||
-        pIdx >= (this.width * this.height * 4)) {
-      throw new Error(msg);
-    }
+    return ((pIdx === parseInt(pIdx, 10)) &&
+            pIdx >= 0 &&
+            pIdx < (this.width * this.height * 4));
   };
 
   Cabbage.prototype._convertIDIndexToCoords = function(idIdx) {
-    var msg = 'Invalid image data index. Unable to convert to coordinates';
+    if (!this._checkValidIDIndex(idIdx)) {
+      this._throwValidationError(IDIDX, COORDS);
+    }
     var m = 4;
-    this._checkValidIDIndex(idIdx, msg);
     if (idIdx % 4 > 0) idIdx -= idIdx % 4;
     return {
             x : (idIdx % (this.width * m)) / m,
@@ -238,22 +238,30 @@
   };
 
   Cabbage.prototype._convertIDIndexToPixIndex = function(idIdx) {
-    var msg = 'Invalid image data index. Unable to convert to pixel index';
+    if (!this._checkValidIDIndex(idIdx)) {
+      this._throwValidationError(IDIDX, PIXIDX);
+    }
     var m = 4;
-    this._checkValidIDIndex(idIdx, msg);
     return Math.floor(idIdx/m);
   };
 
   Cabbage.prototype._convertPixIndexToCoords = function(pIdx) {
-    var msg = 'Invalid pixel index. Unable to convert to coordinates';
-    this._checkValidPIndex(pIdx, msg);
+    if (!this._checkValidPIndex(pIdx)) {
+      this._throwValidationError(PIXIDX, COORDS);
+    }
     return { x: pIdx%this.width, y: Math.floor(pIdx/this.width) };
   };
 
   Cabbage.prototype._convertPixIndexToIDIndex = function(pIdx) {
-    var msg = 'Invalid pixel index. Unable to convert to image data index';
-    this._checkValidPIndex(pIdx, msg);
+    if (!this._checkValidPIndex(pIdx)) {
+      this._throwValidationError(PIXIDX, IDIDX);
+    }
     return pIdx * 4;
+  };
+
+  Cabbage.prototype._throwValidationError = function(from, to) {
+    var msg = 'Invalid ' + from + '. Unable to convert to ' + to;
+    throw new Error(msg);
   };
 
   exports.Cabbage = Cabbage;

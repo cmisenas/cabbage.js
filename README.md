@@ -91,7 +91,7 @@ TODO:
 
 * [ ] Matrix convolution options similar to [gimp](http://docs.gimp.org/en/plug-in-convmatrix.html)
 
-ABOUT:
+**ABOUT**
 
 If cabbage looks like it has a very specific use case right now, that's probably cause it is. I decided to make this after doing a bunch of image manipulation implementations (search my repos for edge detection, bitmap-SVG conversion and image thresholding) and always ending up with a bunch of spaghetti. But really, what I want is cabbage, where I can run through the `ImageData` to do my calculations and not have to remember to`+=4` or maybe `+=3` or was it 2? I dunno. I also just wanted lightweight and didn't care about drawing lines or shapes. Maybe in the future? But not right now. Anyways, if you see something that should be part of cabbage, please send in a PR or your cabbage ideas. With that, I leave you this ever wonderful gif (it had to be done of course).
 
