@@ -4,12 +4,20 @@
   "description": "A lightweight lib for manipulating HTML5 canvas",
   "author": "Jade Misenas <cjmisenas@gmail.com>",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/cmisenas/cabbage.js.git"
+  },
   "devDependencies": {
     "mocha": "2.2.5",
     "chai": "3.2.0",
     "sinon": "1.15.4",
     "sinon-chai": "2.8.0",
-    "jsdom" : "5.6.1"
+    "jsdom" : "5.6.1",
+    "grunt": "~0.4.2",
+    "grunt-contrib-jshint": "~0.6.3",
+    "grunt-contrib-concat": "~0.3.0",
+    "grunt-contrib-uglify": "~0.2.2"
   },
   "scripts": {
     "test": "mocha -u tdd --reporter dot"
