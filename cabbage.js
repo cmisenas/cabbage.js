@@ -12,9 +12,11 @@
     this.y = y;
     this.neighbors = {};
 
-    VALS.forEach(function(d) {
-      self[d] = vals.shift();
-    });
+    if (!!vals) {
+      VALS.forEach(function(d) {
+        self[d] = vals.shift();
+      });
+    }
 
     DIRECTIONS.forEach(function(d){
       self.neighbors[d] = (self[d]());
