@@ -113,7 +113,8 @@
 
   Cabbage.prototype.drawImage = function(sx, sy) {
     this.ctx.drawImage(this._img, sx || 0, sy || 0);
-    this.origImg.imgData = this.ctx.getImageData(0, 0, this.width, this.height);
+    this.origImg.imgData = this.getCurrentImg();
+    this.refreshCurrImageData();
   };
 
   Cabbage.prototype.setImg = function(imgData) {
