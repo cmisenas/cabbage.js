@@ -56,11 +56,11 @@
   Cabbage.prototype.drawImage = function(sx, sy) {
     this.ctx.drawImage(this._img, sx || 0, sy || 0);
     this.refreshCurrImageData();
-    this.origImg.imgData = this.currImg;
+    this.origImg = this.getCurrentImg();
   };
 
-  Cabbage.prototype.setImg = function(imgData) {
-    this.ctx.putImageData(imgData, 0, 0);
+  Cabbage.prototype.setImg = function() {
+    this.putImageData(this.currImg, 0, 0);
   };
 
   /*
@@ -80,7 +80,7 @@
 
   // returns a copy of original image data
   Cabbage.prototype.originalImg = function() {
-    return this.ctx.createImageData(this.origImg.imgData);
+    return this.ctx.createImageData(this.origImg);
   };
 
   Cabbage.prototype.map = function(fn) {
@@ -124,20 +124,23 @@
     return new Pixel(coords.x, coords.y, rgba);
   };
 
+  // Modifies the current image data pixels
+  // Does not modify the canvas image
+  // That is the job of setImg
   Cabbage.prototype.setPixel = function(pixel, val) {
-    var i = this._convertCoordsToIDIndex(pixel),
-        r, g, b, a;
+    var i = this._convertCoordsToIDIndex(pixel);
 
     if (typeof val === 'number') {
-      r = g = b = val;
-      a = this.getCurrentImg().data[i + 3];
+      this.currImg.data[i]     = val;
+      this.currImg.data[i + 1] = val;
+      this.currImg.data[i + 2] = val;
     } else {
-      r = val.r;
-      g = val.g;
-      b = val.b;
-      a = val.a;
+      this.currImg.data[i]     = val.r;
+      this.currImg.data[i + 1] = val.g;
+      this.currImg.data[i + 2] = val.b;
+      this.currImg.data[i + 3] = val.a || 255;
     }
-    this._drawPixel(pixel, r, g, b, a);
+    // this._drawPixel(pixel, r, g, b, a);
   };
 
   Cabbage.prototype._drawPixel = function(pixel, r, g, b, a){
@@ -161,8 +164,8 @@
 
   // Every putImageData done via object
   // stores current image for faster access later
-  Cabbage.prototype.putImageData = function(imgData, x, y) {
-    this.ctx.putImageData(id, pixel.x, pixel.y);
+  Cabbage.prototype.putImageData = function(id, x, y) {
+    this.ctx.putImageData(id, x, y);
     this.refreshCurrImageData();
   };
 

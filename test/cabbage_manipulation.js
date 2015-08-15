@@ -143,11 +143,13 @@ describe('Cabbage', function(){
       });
 
       describe('given an associative array', function() {
-        it('sets rgba value of appropriate image data array elements', function() {
+        it('sets rgba value of currImg', function() {
           var pixel = new Pixel(0, 0, [0, 0, 0, 0]);
           cabbage.setPixel(pixel, {r: 123, g: 45, b: 100, a: 255});
-          expect(cabbage.ctx.fillStyle).to.equal('rgba(123, 45, 100, 255)');
-          expect(cabbage.ctx.fillRect).to.have.been.calledWith(0, 0, 1, 1);
+          expect(cabbage.currImg.data[0]).to.equal(123);
+          expect(cabbage.currImg.data[1]).to.equal(45);
+          expect(cabbage.currImg.data[2]).to.equal(100);
+          expect(cabbage.currImg.data[3]).to.equal(255);
         });
       });
 
@@ -155,8 +157,10 @@ describe('Cabbage', function(){
         it('sets only the *rgb value* of image data array using number (for grayscaling) and leaves the alpha channel value unchanged', function() {
           var pixel = new Pixel(0, 0, [0, 0, 0, 0]);
           cabbage.setPixel(pixel, 144);
-          expect(cabbage.ctx.fillStyle).to.equal('rgba(144, 144, 144, ' + defVal + ')');
-          expect(cabbage.ctx.fillRect).to.have.been.calledWith(0, 0, 1, 1);
+          expect(cabbage.currImg.data[0]).to.equal(144);
+          expect(cabbage.currImg.data[1]).to.equal(144);
+          expect(cabbage.currImg.data[2]).to.equal(144);
+          expect(cabbage.currImg.data[3]).to.equal(defVal);
         });
       });
     });
