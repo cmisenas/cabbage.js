@@ -83,11 +83,11 @@
           self.elem.width = self.width;
           self.elem.height = self.height;
         }
-        self.drawImage(img, sx, sy);
+        self.drawImage(sx, sy);
       });
     } else if (/HTMLImageElement/.test(img.constructor)){
       this._img = img;
-      this.drawImage(img, sx, sy);
+      this.drawImage(sx, sy);
     }
     return this;
   };
@@ -111,8 +111,8 @@
     return elem;
   };
 
-  Cabbage.prototype.drawImage = function(img, sx, sy) {
-    this.ctx.drawImage(img, sx || 0, sy || 0);
+  Cabbage.prototype.drawImage = function(sx, sy) {
+    this.ctx.drawImage(this._img, sx || 0, sy || 0);
     this.origImg.imgData = this.ctx.getImageData(0, 0, this.width, this.height);
   };
 
