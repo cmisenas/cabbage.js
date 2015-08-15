@@ -4,8 +4,8 @@
   var PIXIDX = 'pixel index';
   var IDIDX = 'image data index';
 
-  function Cabbage(id, w, h, document) {
-    d = d || document;
+  function Cabbage(id, w, h, doc) {
+    d = d || doc;
     this.elem = d.getElementById(id) || this._createCanvas(id, w, h);
     this.width = w || 600;
     this.height = h || 400;
