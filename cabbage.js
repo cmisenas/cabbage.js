@@ -113,8 +113,8 @@
 
   Cabbage.prototype.drawImage = function(sx, sy) {
     this.ctx.drawImage(this._img, sx || 0, sy || 0);
-    this.origImg.imgData = this.getCurrentImg();
     this.refreshCurrImageData();
+    this.origImg.imgData = this.currImg;
   };
 
   Cabbage.prototype.setImg = function(imgData) {
@@ -168,7 +168,7 @@
   // returns the pixel object if it exists
   // otherwise throws an error
   Cabbage.prototype.getPixel = function(loc) {
-    var index, coords;
+    var index, coords, rgba;
 
     if (typeof loc === 'number') {
       index = loc;
@@ -178,7 +178,8 @@
       coords = loc;
     }
 
-    return new Pixel(coords.x, coords.y, this.currImg.data.slice(index, index + 4));
+    rgba = Array.prototype.slice.call(this.currImg.data, index, index + 4);
+    return new Pixel(coords.x, coords.y, rgba);
   };
 
   Cabbage.prototype.setPixel = function(pixel, val) {
