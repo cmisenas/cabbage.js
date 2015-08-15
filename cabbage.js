@@ -64,9 +64,9 @@
 
   function Cabbage(id, w, h, doc) {
     d = d || doc;
-    this.elem = d.getElementById(id) || this._createCanvas(id, w, h);
     this.width = w || 600;
     this.height = h || 400;
+    this.elem = d.getElementById(id) || this._createCanvas(id);
     this.ctx = this.elem.getContext('2d');
     this.origImg = {};
     this.currImg = {};
@@ -101,12 +101,12 @@
     usrImg.src = imgSrc;
   };
 
-  Cabbage.prototype._createCanvas = function(id, w, h) {
+  Cabbage.prototype._createCanvas = function(id) {
     var elem;
     elem = d.createElement('canvas');
     elem.id = id;
-    elem.width = w;
-    elem.height = h;
+    elem.width = this.width;
+    elem.height = this.height;
     d.body.insertBefore(elem, d.body.firstChild);
     return elem;
   };
