@@ -165,7 +165,7 @@
   // Every putImageData done via object
   // stores current image for faster access later
   Cabbage.prototype.putImageData = function(id, x, y) {
-    this.ctx.putImageData(id, x, y);
+    this.ctx.putImageData(id, x || 0, y || 0);
     this.refreshCurrImageData();
   };
 
