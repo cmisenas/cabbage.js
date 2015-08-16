@@ -64,6 +64,10 @@ With cabbage, you get the following `canvas.context` methods already defined:
 
   * `putImageData`
 
+And some other extras:
+
+  * `resetImageData`
+
 The difference is that they store image data behind the scenes for easy access later.
 
 cabbage also defines the following:
@@ -88,6 +92,10 @@ For checking pixels:
 
 
 TODO:
+
+* [ ] Make validations separate from conversion methods
+
+  Conversion happens on `map` and `convolve` on each iteration. The validation makes running through it extremely slow. Instead of doing it by default, call map and convolve then let user decide whether or not validation should happen.
 
 * [ ] Matrix convolution options similar to [gimp](http://docs.gimp.org/en/plug-in-convmatrix.html)
 
