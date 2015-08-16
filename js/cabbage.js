@@ -59,6 +59,8 @@
     this.origImg = this.getCurrentImg();
   };
 
+  // TODO: This looks sort of confusing
+  // rethink its use/name
   Cabbage.prototype.setImg = function() {
     this.putImageData(this.currImg, 0, 0);
   };
@@ -67,11 +69,13 @@
   // Delete image data; leave canvas blank
   Cabbage.prototype.deleteImg = function() {
   };
+  */
 
   // Reset to original data
-  Cabbage.prototype.resetImg = function() {
+  Cabbage.prototype.resetImageData = function() {
+    //put back the original image to the canvas
+    this.putImageData(this.origImg);
   };
-  */
 
   // returns the actual current image data
   Cabbage.prototype.getCurrentImg = function() {
