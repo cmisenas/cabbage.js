@@ -54,12 +54,6 @@ describe('Cabbage', function(){
         // middle pixel in 3x3 (5th pixel from the first or 4 as it is base 0)
         expect(cabbage._convertCoordsToIDIndex({x: 1, y: 1})).to.equal(4*4);
       });
-
-      it('throws an error when an invalid coordinate is given', function() {
-        var message = 'Invalid coordinate. Unable to convert to image data index';
-        expect(function() { cabbage._convertCoordsToIDIndex({x: -23, y: 0}); }).to.throw(message);
-        expect(function() { cabbage._convertCoordsToIDIndex({x: 3, y: 2}); }).to.throw(message);
-      });
     });
 
     describe('_convertCoordsToPixIndex', function() {
@@ -75,12 +69,6 @@ describe('Cabbage', function(){
       it('converts coordinates to pixel index', function() {
         expect(cabbage._convertCoordsToPixIndex({x: 2, y: 2})).to.equal(8);
         expect(cabbage._convertCoordsToPixIndex({x: 0, y: 1})).to.equal(3);
-      });
-
-      it('throws an error when an invalid coordinate is given', function() {
-        var message = 'Invalid coordinate. Unable to convert to pixel index';
-        expect(function() { cabbage._convertCoordsToPixIndex({x: 1000, y: 3}); }).to.throw(message);
-        expect(function() { cabbage._convertCoordsToPixIndex({x: 0, y: -1}); }).to.throw(message);
       });
     });
 
@@ -98,24 +86,12 @@ describe('Cabbage', function(){
           expect(cabbage._convertIDIndexToCoords(17)).to.deep.equal({x: 1, y: 1});
         });
       });
-
-      it('throws an error when an invalid image data index is given', function() {
-        var message = 'Invalid image data index. Unable to convert to coordinate';
-        expect(function() { cabbage._convertIDIndexToCoords({}); }).to.throw(message);
-        expect(function() { cabbage._convertIDIndexToCoords(4.6); }).to.throw(message);
-      });
     });
 
     describe('_convertPixIndexToCoords', function() {
       it('converts pixel index to coordinates', function() {
         expect(cabbage._convertPixIndexToCoords(2)).to.deep.equal({x: 2, y: 0});
         expect(cabbage._convertPixIndexToCoords(5)).to.deep.equal({x: 2, y: 1});
-      });
-
-      it('throws an error when an invalid pixel index is given', function() {
-        var message = 'Invalid pixel index. Unable to convert to coordinate';
-        expect(function() { cabbage._convertPixIndexToCoords(9); }).to.throw(message);
-        expect(function() { cabbage._convertPixIndexToCoords(-42); }).to.throw(message);
       });
     });
 
@@ -134,24 +110,12 @@ describe('Cabbage', function(){
           expect(cabbage._convertIDIndexToPixIndex(27)).to.deep.equal(6);
         });
       });
-
-      it('throws an error when an invalid image data index is given', function() {
-        var message = 'Invalid image data index. Unable to convert to pixel index';
-        expect(function() { cabbage._convertIDIndexToPixIndex(undefined); }).to.throw(message);
-        expect(function() { cabbage._convertIDIndexToPixIndex(36); }).to.throw(message);
-      });
     });
 
     describe('_convertPixIndexToIDIndex', function() {
       it('converts pixel index to image data index (starting with r value)', function() {
         expect(cabbage._convertPixIndexToIDIndex(0)).to.equal(0);
         expect(cabbage._convertPixIndexToIDIndex(5)).to.equal(20);
-      });
-
-      it('throws an error when an invalid pixel index is given', function() {
-        var message = 'Invalid pixel index. Unable to convert to image data index';
-        expect(function() { cabbage._convertPixIndexToIDIndex('asdf'); }).to.throw(message);
-        expect(function() { cabbage._convertPixIndexToIDIndex(44); }).to.throw(message);
       });
     });
 

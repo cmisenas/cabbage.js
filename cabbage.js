@@ -177,9 +177,15 @@
     var index, coords, rgba;
 
     if (typeof loc === 'number') {
+      if (!this._checkValidIDIndex(loc)) {
+        this._throwValidationError(IDIDX, COORDS);
+      }
       index = loc;
       coords = this._convertIDIndexToCoords(loc);
     } else {
+      if (!this._checkValidCoords(loc)) {
+        this._throwValidationError(COORDS, IDIDX);
+      }
       index =  this._convertCoordsToIDIndex(loc);
       coords = loc;
     }
@@ -261,17 +267,11 @@
   };
 
   Cabbage.prototype._convertCoordsToIDIndex = function(coords) {
-    if (!this._checkValidCoords(coords)) {
-      this._throwValidationError(COORDS, IDIDX);
-    }
     var m = 4;
     return (coords.y * this.width + coords.x) * m;
   };
 
   Cabbage.prototype._convertCoordsToPixIndex = function(coords) {
-    if (!this._checkValidCoords(coords)) {
-      this._throwValidationError(COORDS, PIXIDX);
-    }
     return (coords.y * this.width) + coords.x;
   };
 
@@ -296,9 +296,6 @@
   };
 
   Cabbage.prototype._convertIDIndexToCoords = function(idIdx) {
-    if (!this._checkValidIDIndex(idIdx)) {
-      this._throwValidationError(IDIDX, COORDS);
-    }
     var m = 4;
     if (idIdx % 4 > 0) idIdx -= idIdx % 4;
     return {
@@ -308,24 +305,15 @@
   };
 
   Cabbage.prototype._convertIDIndexToPixIndex = function(idIdx) {
-    if (!this._checkValidIDIndex(idIdx)) {
-      this._throwValidationError(IDIDX, PIXIDX);
-    }
     var m = 4;
     return Math.floor(idIdx/m);
   };
 
   Cabbage.prototype._convertPixIndexToCoords = function(pIdx) {
-    if (!this._checkValidPIndex(pIdx)) {
-      this._throwValidationError(PIXIDX, COORDS);
-    }
     return { x: pIdx%this.width, y: Math.floor(pIdx/this.width) };
   };
 
   Cabbage.prototype._convertPixIndexToIDIndex = function(pIdx) {
-    if (!this._checkValidPIndex(pIdx)) {
-      this._throwValidationError(PIXIDX, IDIDX);
-    }
     return pIdx * 4;
   };
 
